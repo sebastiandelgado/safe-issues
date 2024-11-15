@@ -107,3 +107,11 @@ When we call `safe4337Pack.createTransaction({ transactions: [transaction]})` us
 }
 
 ```
+
+# Relevant package versions
+This issue is coming up with the latest versions of the safe-global packages as of today (11/15/2024)
+```json
+    "@safe-global/protocol-kit": "^5.0.4",
+    "@safe-global/relay-kit": "^3.2.4",
+    "@safe-global/safe-modules-deployments": "^2.2.4",
+```
