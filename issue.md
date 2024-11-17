@@ -2,7 +2,7 @@
 # Summary
 We're running into an issue when calling `safe4337Pack.createTransaction({ transactions: [transaction]})`
 
-It seems that when we initialize Safe4337Pack with the pimlico bundler and paymaster URLs, Safe4337Pack uses `eth_estimateUserOperationGas` to estimate gas, which returns a `MethodNotFoundRpcError` from pimlico.
+When we initialize Safe4337Pack with the pimlico bundler and paymaster URLs, Safe4337Pack uses `eth_estimateUserOperationGas` to estimate gas, which returns a `MethodNotFoundRpcError` from pimlico.
 
 When we switch the paymaster and bundler URL to alchemy, Safe4337Pack uses `pimlico_getUserOperationGasPrice` to estimate gas, which returns an `Unsupported method` from alchemy.
 
@@ -14,7 +14,7 @@ It seems that the calls are reversed based on the provided configuration? Below 
 Our Safe4337Pack initialization values for pimlico paymaster and bundler are as follows:
 ```typescript
         const safe4337Pack = await Safe4337Pack.init({
-            provider: process.env.RPC_URL || '',
+            provider: process.env.RPC_URL, "https://base-sepolia.g.alchemy.com/v2/G6Kjp2b01jHSPtNexytKoX8IdW7CuG6d"
             signer: {
                 rawId: hexRawId,
                 coordinates,
@@ -23,7 +23,7 @@ Our Safe4337Pack initialization values for pimlico paymaster and bundler are as 
             paymasterOptions: {
                 isSponsored: true,
                 paymasterUrl: `https://api.pimlico.io/v2/${baseSepolia.id}/rpc?apikey=${process.env.PIMLICO_API_KEY}`,
-                sponsorshipPolicyId: process.env.PIMLICO_SPONSORSHIP_POLICY_ID || '',
+                sponsorshipPolicyId: process.env.PIMLICO_SPONSORSHIP_POLICY_ID,
             },
             options: {
                 owners: [],
@@ -68,15 +68,15 @@ When we call `safe4337Pack.createTransaction({ transactions: [transaction]})` us
 Our Safe4337Pack initialization values for pimlico paymaster and bundler are as follows:
 ```typescript
         const safe4337Pack = await Safe4337Pack.init({
-            provider: process.env.RPC_URL || '',
+            provider: process.env.RPC_URL, //"https://base-sepolia.g.alchemy.com/v2/G6Kjp2b01jHSPtNexytKoX8IdW7CuG6d"
             signer: {
                 rawId: hexRawId,
                 coordinates,
             },
-            bundlerUrl: process.env.RPC_URL || '',
+            bundlerUrl: process.env.RPC_URL, //"https://base-sepolia.g.alchemy.com/v2/G6Kjp2b01jHSPtNexytKoX8IdW7CuG6d"
             paymasterOptions: {
                 isSponsored: true,
-                paymasterUrl: process.env.RPC_URL || '',
+                paymasterUrl: process.env.RPC_URL, // "https://base-sepolia.g.alchemy.com/v2/G6Kjp2b01jHSPtNexytKoX8IdW7CuG6d"
                 sponsorshipPolicyId: process.env.ALCHEMY_GAS_SPONSORSHIP_POLICY_ID,
             },
             options: {
@@ -114,4 +114,11 @@ This issue is coming up with the latest versions of the safe-global packages as 
     "@safe-global/protocol-kit": "^5.0.4",
     "@safe-global/relay-kit": "^3.2.4",
     "@safe-global/safe-modules-deployments": "^2.2.4",
+```
+
+We've also tried reverting to this set of versions which worked under the same configuration in September, but found the same exact issue:
+```json
+    "@safe-global/protocol-kit": "^4.1.0",
+    "@safe-global/relay-kit": "^3.1.0",
+    "@safe-global/safe-modules-deployments": "^2.2.1",
 ```
